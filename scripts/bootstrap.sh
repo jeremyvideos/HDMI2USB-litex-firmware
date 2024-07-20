@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Assuming you have downloaded this repo locally, I don't
+# recommend running this script to initialize it. It downloads
+# timvideos/litex-buildenv into this repo, duplicating lots of
+# code unnecessarily.
+echo "I don't  recommend running this script."
+echo "You can bootstrap with these commands instead:"
+echo "  ./scripts/debian-setup.sh"
+echo "  ./scripts/download-env.sh"
+exit 1
+
 if [ "`whoami`" = "root" ]
 then
     echo "Running the script as root is not permitted"
