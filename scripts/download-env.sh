@@ -251,15 +251,15 @@ export PATH=$CONDA_DIR/bin:$PATH:/sbin
 	if [[ ! -e $CONDA_DIR/bin/conda ]]; then
 		cd $BUILD_DIR
 		# FIXME: Get the miniconda people to add a "self check" mode
-		wget --no-verbose --continue https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+		wget --no-verbose --continue https://repo.continuum.io/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh
 		#wget --continue https://repo.anaconda.com/miniconda/Miniconda3-${CONDA_VERSION}-Linux-x86_64.sh -O Miniconda3-latest-Linux-x86_64.sh
-		chmod a+x Miniconda3-latest-Linux-x86_64.sh
+		chmod a+x Miniconda3-4.7.10-Linux-x86_64.sh
 		# -p to specify the install location
 		# -b to enable batch mode (no prompts)
 		# -f to not return an error if the location specified by -p already exists
 		(
 			export HOME=$CONDA_DIR
-			./Miniconda3-latest-Linux-x86_64.sh -p $CONDA_DIR -b -f || exit 1
+			./Miniconda3-4.7.10-Linux-x86_64.sh -p $CONDA_DIR -b -f || exit 1
 		)
 		fix_conda
 		conda config --system --add envs_dirs $CONDA_DIR/envs
@@ -577,13 +577,14 @@ echo "Installing HDMI2USB-mode-switch (flashing and config tool)"
 pip install --upgrade git+https://github.com/timvideos/HDMI2USB-mode-switch.git
 check_import_version hdmi2usb.modeswitch $HDMI2USB_MODESWITCH_VERSION
 
-if [ "$FIRMWARE" = "zephyr" ]; then
-	# yaml for parsing configuration in Zephyr SDK
-	echo
-	echo "Installing yaml (python module)"
-	conda install -y $CONDA_FLAGS pyyaml
-	check_import yaml
+# Dependency of litedram, also used for parsing configuration in Zephyr SDK.
+# Pinning because the latest version doesn't support python 3.7.
+echo
+echo "Installing yaml (python module)"
+conda install -y $CONDA_FLAGS pyyaml=$PYYAML_VERSION
+check_import yaml
 
+if [ "$FIRMWARE" = "zephyr" ]; then
 	# gperf for Zephyr SDK
 	echo
 	echo "Installing gperf"
